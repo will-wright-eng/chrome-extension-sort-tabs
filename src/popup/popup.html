@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Domain Tab Sorter</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --accent: #1a73e8;
+      }
+      body {
+        width: 240px;
+        margin: 0;
+        padding: 14px 16px 16px;
+        font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 14px;
+      }
+      fieldset {
+        border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+        border-radius: 8px;
+        margin: 0 0 12px;
+        padding: 8px 10px 10px;
+      }
+      legend {
+        padding: 0 4px;
+        font-weight: 600;
+        opacity: 0.75;
+      }
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 3px 0;
+        cursor: pointer;
+      }
+      button {
+        width: 100%;
+        padding: 9px 12px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover {
+        filter: brightness(1.05);
+      }
+      button:active {
+        filter: brightness(0.95);
+      }
+      #status {
+        margin: 10px 0 0;
+        min-height: 1.2em;
+        text-align: center;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Domain Tab Sorter</h1>
+
+    <fieldset>
+      <legend>Direction</legend>
+      <label><input type="radio" name="direction" value="asc" /> A → Z (default)</label>
+      <label><input type="radio" name="direction" value="desc" /> Z → A</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Scope</legend>
+      <label><input type="radio" name="scope" value="current" /> Current window</label>
+      <label><input type="radio" name="scope" value="all" /> All windows</label>
+    </fieldset>
+
+    <button id="sort" type="button">Sort tabs</button>
+    <p id="status" role="status" aria-live="polite"></p>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

@@ -14,6 +14,12 @@
 
 # production
 /build
+/dist
+/domain-tab-sorter.zip
+
+# playwright
+/test-results
+/playwright-report
 
 # misc
 .DS_Store
