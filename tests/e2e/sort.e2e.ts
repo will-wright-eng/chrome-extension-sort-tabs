@@ -15,7 +15,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const EXT_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "dist");
+const EXT_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "extension");
 
 let server: ReturnType<typeof Bun.serve>;
 let port: number;

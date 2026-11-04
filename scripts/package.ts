@@ -1,5 +1,5 @@
 /**
- * Produce a store-ready / load-unpacked zip: build, then zip dist/ into
+ * Produce a store-ready zip: build, then zip extension/ into
  * domain-tab-sorter.zip at the project root.
  */
 
@@ -12,7 +12,7 @@ const zip = join(root, "domain-tab-sorter.zip");
 
 await $`bun run ${join(root, "scripts/build.ts")}`;
 await $`rm -f ${zip}`;
-// Zip the *contents* of dist/ so manifest.json sits at the archive root.
-await $`cd ${join(root, "dist")} && zip -qr ${zip} .`;
+// Zip the *contents* of extension/ so manifest.json sits at the archive root.
+await $`cd ${join(root, "extension")} && zip -qr ${zip} .`;
 
 console.log("Packaged -> domain-tab-sorter.zip");

@@ -1,29 +1,24 @@
 /**
- * Build the extension into `dist/`:
- *   - bundle src/background.ts   -> dist/background.js
- *   - bundle src/popup/popup.ts  -> dist/popup.js
- *   - copy manifest.json, popup.html, and assets/icons/ into dist/
+ * Bundle the TypeScript entrypoints into the load-unpacked `extension/` dir:
+ *   - src/background.ts  -> extension/background.js
+ *   - src/popup/popup.ts -> extension/popup.js
  *
- * Uses Bun's bundler (no Vite/esbuild dependency needed).
+ * manifest.json, popup.html, and icons/ already live in extension/ and are
+ * committed; the bundled JS is committed too so the directory loads as-is.
  */
 
-import { cp, mkdir, rm } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const dist = join(root, "dist");
+const outdir = join(root, "extension");
 
 const entrypoints = ["src/background.ts", "src/popup/popup.ts"];
 
-await rm(dist, { recursive: true, force: true });
-await mkdir(join(dist, "icons"), { recursive: true });
-
-// Bundle each entrypoint to a flat file at the dist root (background.js, popup.js).
 for (const entry of entrypoints) {
   const result = await Bun.build({
     entrypoints: [join(root, entry)],
-    outdir: dist,
+    outdir,
     target: "browser",
     format: "esm",
     minify: false,
@@ -35,8 +30,4 @@ for (const entry of entrypoints) {
   }
 }
 
-await cp(join(root, "manifest.json"), join(dist, "manifest.json"));
-await cp(join(root, "src/popup/popup.html"), join(dist, "popup.html"));
-await cp(join(root, "assets/icons"), join(dist, "icons"), { recursive: true });
-
-console.log("Built extension -> dist/");
+console.log("Built extension -> extension/");

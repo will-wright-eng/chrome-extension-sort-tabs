@@ -108,9 +108,9 @@ function encodePng(size: number): Uint8Array {
   ]);
 }
 
-const outDir = join(dirname(fileURLToPath(import.meta.url)), "..", "assets", "icons");
+const outDir = join(dirname(fileURLToPath(import.meta.url)), "..", "extension", "icons");
 mkdirSync(outDir, { recursive: true });
 for (const size of SIZES) {
   writeFileSync(join(outDir, `${size}.png`), encodePng(size));
-  console.log(`wrote assets/icons/${size}.png`);
+  console.log(`wrote extension/icons/${size}.png`);
 }

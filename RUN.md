@@ -20,7 +20,7 @@ design.
 | Typecheck      | `tsc --noEmit` | `bun run typecheck` |
 | Lint           | `eslint .`     | `bun run lint`      |
 | Build          | `vite build`   | `bun run build`     |
-| Package        | zip `dist/`    | `bun run package`   |
+| Package        | zip `extension/` | `bun run package` |
 
 > **Note on SPEC §8 criterion #1.** The spec lists `npm ci && npm run build`.
 > This project intentionally ships a Bun toolchain (only `bun.lock` is
@@ -38,11 +38,15 @@ bun install
 ## Build
 
 ```bash
-bun run build          # bundles src/ into dist/ (background.js, popup.js, popup.html, icons, manifest)
-bun run package        # build + zip dist/ -> domain-tab-sorter.zip
+bun run build          # bundles src/ -> extension/background.js + extension/popup.js
+bun run package        # build + zip extension/ -> domain-tab-sorter.zip
 ```
 
-`bun run gen:icons` regenerates the PNG icons in `assets/icons/` (already
+The `extension/` directory is the load-unpacked target and is fully committed,
+including the bundled `background.js` and `popup.js`. Re-run `bun run build`
+after changing anything under `src/` and commit the regenerated JS.
+
+`bun run gen:icons` regenerates the PNG icons in `extension/icons/` (already
 committed; only needed if you change the icon design).
 
 ## Static checks & unit tests
@@ -70,31 +74,34 @@ runtime.**
 
 ## Load the extension manually in Chrome
 
-1. `bun run build` (produces `dist/`).
-2. Open `chrome://extensions`.
-3. Enable **Developer mode** (top-right).
-4. Click **Load unpacked** and select the `dist/` folder.
+1. Open `chrome://extensions`. (No build step needed — `extension/` is
+   committed ready to load. Run `bun run build` only if you edited `src/`.)
+2. Enable **Developer mode** (top-right).
+3. Click **Load unpacked** and select the `extension/` folder.
    (To use the archive instead, first unzip `domain-tab-sorter.zip` and
    **Load unpacked** on the extracted folder — `chrome://extensions` cannot
    load a raw `.zip` as an unpacked extension.)
-5. Pin the **Domain Tab Sorter** toolbar icon, open a few tabs across several
+4. Pin the **Domain Tab Sorter** toolbar icon, open a few tabs across several
    sites, click the icon, and press **Sort tabs**. Use the Direction / Scope
    controls to change behavior; preferences persist across restarts.
 
 ## Project layout
 
 ```
-manifest.json          # MV3 manifest (permissions: tabs, storage — no host permissions)
+extension/             # load this folder unpacked in chrome://extensions
+  manifest.json        # MV3 manifest (permissions: tabs, storage — no host permissions)
+  popup.html           # popup UI
+  background.js        # built from src/background.ts (committed)
+  popup.js             # built from src/popup/popup.ts (committed)
+  icons/               # 16/32/48/128 px PNGs
 src/
   background.ts        # service worker: receives SORT messages, moves tabs
-  popup/popup.html     # popup UI
   popup/popup.ts       # popup controller (prefs + trigger)
   lib/sort.ts          # pure, unit-tested ordering logic (the heart)
   lib/messages.ts      # shared message/preference contracts
 scripts/               # build.ts, package.ts, gen-icons.ts
 tests/unit/            # sort.test.ts
 tests/e2e/             # sort.e2e.ts
-assets/icons/          # 16/32/48/128 px PNGs
 ```
 
 ## What is NOT verified automatically
